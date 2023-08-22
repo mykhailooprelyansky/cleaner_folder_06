@@ -66,7 +66,12 @@ def scan_unknown_files(file):
             new_unknown_file_name = unknown_file_normalize + file_suffix
             unknown_folder = main_folder / unknown_extension
             unknown_folder.mkdir(exist_ok=True)
-            file.replace(unknown_folder / new_unknown_file_name)
+            try:
+                file.replace(unknown_folder / new_unknown_file_name)
+            except FileNotFoundError:
+                pass
+
+
 
 
 if __name__ == '__main__':
