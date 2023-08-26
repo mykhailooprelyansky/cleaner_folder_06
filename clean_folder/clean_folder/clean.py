@@ -91,6 +91,7 @@ def scan_unknown_files(file):
                 pass
 
 
-path = sys.argv[1]
-print(f"Start in {path}")
-scan(Path(path))
+def main():
+    path = sys.argv[1]
+    print(f"Start in {path}")
+    scan(Path(path))

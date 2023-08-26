@@ -1,3 +1,3 @@
-from clean_folder.clean import scan
+from clean_folder.clean import main
 
-__all__ = ['scan']
+__all__ = ['main']
