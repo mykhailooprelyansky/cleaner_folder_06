@@ -1,7 +1,20 @@
+import re
 import shutil
 import sys
 from pathlib import Path
-import normalize
+
+UKRAINIAN_SYMBOLS = 'абвгдеєжзиіїйклмнопрстуфхцчшщьюя'
+TRANSLATION = ("a", "b", "v", "g", "d", "e", "je", "zh", "z", "y", "i", "ji", "j", "k", "l", "m", "n", "o", "p", "r",
+               "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "ju", "ja")
+
+
+TRANS = {}
+
+
+for key, value in zip(UKRAINIAN_SYMBOLS, TRANSLATION):
+    TRANS[ord(key)] = value
+    TRANS[ord(key.upper())] = value.upper()
+
 
 EXTENSIONS_DICT = {
     'images': ('.jpeg', '.png', '.jpg', '.svg', '.dng'),
@@ -13,6 +26,12 @@ EXTENSIONS_DICT = {
 
 
 LIST_FOLDERS = ("images", "video", "documents", "audio", "archives", "unknown")
+
+
+def normalize(name):
+    new_name = name.translate(TRANS)
+    new_name = re.sub(r'\W', "_", new_name)
+    return new_name
 
 
 main_folder = Path(sys.argv[1])
@@ -36,14 +55,14 @@ def scan(folder):
 def scan_files(file):
     file_suffix = file.suffix.lower()
     file_name = file.stem
-    for key, values in EXTENSIONS_DICT.items():
+    for clef, values in EXTENSIONS_DICT.items():
         if file_suffix in values:
-            file_normalize = normalize.normalize(file_name)
+            file_normalize = normalize(file_name)
             new_file_name = file_normalize + file_suffix
-            end_folder = main_folder.joinpath(key)
+            end_folder = main_folder.joinpath(clef)
             end_folder.mkdir(exist_ok=True)
             file.replace(end_folder / new_file_name)
-            if key == 'archives':
+            if clef == 'archives':
                 unpack_archive_folder = end_folder / file_normalize
                 unpack_archive_folder.mkdir(exist_ok=True)
                 try:
@@ -59,10 +78,10 @@ def scan_files(file):
 def scan_unknown_files(file):
     file_suffix = file.suffix.lower()
     file_name = file.stem
-    for key, values in EXTENSIONS_DICT.items():
+    for clef, values in EXTENSIONS_DICT.items():
         if file_suffix not in values:
             unknown_extension = "unknown"
-            unknown_file_normalize = normalize.normalize(file_name)
+            unknown_file_normalize = normalize(file_name)
             new_unknown_file_name = unknown_file_normalize + file_suffix
             unknown_folder = main_folder / unknown_extension
             unknown_folder.mkdir(exist_ok=True)
@@ -72,8 +91,6 @@ def scan_unknown_files(file):
                 pass
 
 
-if __name__ == '__main__':
-    path = sys.argv[1]
-    print(f"Start in {path}")
-
-    scan(Path(path))
+path = sys.argv[1]
+print(f"Start in {path}")
+scan(Path(path))

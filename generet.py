@@ -32,7 +32,7 @@ def generate_image(path):
 
 
 def generate_folders(path):
-    folder_name = ['temp', 'folder', 'dir', 'tmp', 'OMG', 'is_it_true', 'no_way', 'find_it']
+    folder_name = ['Temp', 'folder', 'dir', 'tmp', 'OMG', 'is_it_true', 'no_way', 'find_it']
     folder_path = Path(
         f"{path}/" + '/'.join(choices(folder_name, weights=[10, 10, 1, 1, 1, 1, 1, 1], k=randint(5, len(folder_name)))))
     folder_path.mkdir(parents=True, exist_ok=True)
